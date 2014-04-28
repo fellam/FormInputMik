@@ -3,7 +3,17 @@ one Semantic Form Input.
 
 For details click [here](https://www.mediawiki.org/Extension:FormInputMik) 
 
+<<<<<<< HEAD
 Please help me improving this project making a donation [here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UBX4YGMGGWHEN)
+=======
+Please help me improving this project making a donation:
+<form action="https://www.paypal.com/cgi-bin/webscr" method="post" target="_top">
+<input type="hidden" name="cmd" value="_s-xclick">
+<input type="hidden" name="hosted_button_id" value="UBX4YGMGGWHEN">
+<input type="image" src="https://www.paypalobjects.com/en_US/GB/i/btn/btn_donateCC_LG.gif" border="0" name="submit" alt="PayPal – The safer, easier way to pay online.">
+<img alt="" border="0" src="https://www.paypalobjects.com/en_GB/i/scr/pixel.gif" width="1" height="1">
+</form>
+>>>>>>> 68c3b6cbbcf0ef926377406444ebfa6fe6adf1d1
 
 == Dependencies ==
 
