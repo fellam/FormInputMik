@@ -1,11 +1,9 @@
 The FormInputMik extension enables the edit or generation of a page using 
 one Semantic Form Input.
 
-For details see https://www.mediawiki.org/Extension:FormInputMik
+For details click [here](https://www.mediawiki.org/Extension:FormInputMik) 
 
-If you would like to make a donation and allow me to spend more time on improving this project 
-you can copy paste this link in your browser
-https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UBX4YGMGGWHEN
+Please help me improving this project making a donation [here](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=UBX4YGMGGWHEN)
 
 == Dependencies ==
 
