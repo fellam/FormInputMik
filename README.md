@@ -1,3 +1,6 @@
+FormInputMik
+======================
+
 The FormInputMik extension enables the edit or generation of a page using 
 one Semantic Form Input.
 
