@@ -35,11 +35,8 @@ When clicking on the submit button:
 # if the page exists they will be redirected to the page edit 
 # if the page does not exists (or the text is blank) they will be redirected to the formlink page
 
-<<<<<<< HEAD
 It was adapted by [[User:Michele.Fella|Mik]] for the purpose of having a single button to add/edit page and avoid users to override existing pages with formlink.
-=======
-It was adapted by [mailto:michele.fella@gmail.com Mik] for the purpose of having a single button to add/edit page and avoid users to override existing pages with formlink.
->>>>>>> branch 'master' of https://github.com/fellam/FormInputMik.git
+
 
 {{Note|1=This extension is based on [[Inputbox|InputBox extension]] source code. ..hopefully one day I will be able to merge my changes to the original project. Mik}}
 
