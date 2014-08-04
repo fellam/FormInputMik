@@ -8,7 +8,7 @@
 
 // FormInputMik class
 class FormInputMik {
-
+	
 	/* Fields */
 
 	private $mParser;
@@ -43,6 +43,8 @@ class FormInputMik {
 		switch( $this->mType ) {
 			case 'create':
 				return $this->getCreateForm();
+			case 'createedit':
+				return $this->getCreateEditForm();
 			default:
 				return Xml::tags( 'div', null,
 					Xml::element( 'strong',
@@ -64,132 +66,266 @@ class FormInputMik {
 	public function getCreateForm() {
 		global $wgScript;
 		global $wgHtml5;
-		
+	global $wgScript;
 		if ( !$this->mButtonLabel ) {
 			$this->mButtonLabel = wfMessage( 'createarticle' )->text();
 		}
-		
-   $fs = SpecialPageFactory::getPage( 'FormEdit' );
-	 $classStr = 'popupforminput';
-   $fs_url = $fs->getTitle()->getLocalURL();
-   $formInputAttrs = array( 'size' => $this->mWidth );
-   if ( $wgHtml5 ) {
-						$formInputAttrs['placeholder'] = $this->mPlaceholderText;
-	  }
-	  // Now apply the necessary settings and Javascript, depending
-	  // on whether or not there's autocompletion (and whether the
-	  // autocompletion is local or remote).
-	  $input_num = 1;
-	  $inNamespace = $this->mNamespaces;
-	  if ( !isset( $inNamespace ) || $inNamespace == '' ) {
-	//if ( empty( $inAutocompletionSource ) ) {
-	          $formInputAttrs['class'] = 'formInput';
-	  } else {
-	  		    SFParserFunctions::$num_autocompletion_inputs++;
-	          $input_num = SFParserFunctions::$num_autocompletion_inputs;
-	          // place the necessary Javascript on the page, and
-	          // disable the cache (so the Javascript will show up) -
-	          // if there's more than one autocompleted #forminput
-	          // on the page, we only need to do this the first time
-	          if ( $input_num == 1 ) {
-	                  $this->mParser->disableCache();
-	                  SFUtils::addJavascriptAndCSS( $this->mParser );
-	          }
-				    $inputID = 'input_' . $input_num;
-				    $inputIDform = $inputID."form";
-	          $formInputAttrs['id'] = $inputID;
-	          //$formInputAttrs['namespace'] = $inNamespace;
-	          $formInputAttrs['class'] = 'autocompleteInput createboxInput formInput';
-		  $mRemoteAutocompletion = $this->mRemoteAutocompletion;
-	          if ( $mRemoteAutocompletion ) {
-	                  $formInputAttrs['autocompletesettings'] = $inNamespace;
-	                  $formInputAttrs['autocompletedatatype'] = 'namespace';
-	          } else {
-	                  $autocompletion_values = SFUtils::getAutocompleteValues( $inNamespace, 'namespace' );
-	                  global $sfgAutocompleteValues;
-	                  $sfgAutocompleteValues[$inputID] = $autocompletion_values;
-	                  $formInputAttrs['autocompletesettings'] = $inputID;
-	          }
-	  }
-	  /*$htmlOut = <<<END
-<form id="$inputIDform" name="createbox" action="$fs_url" method="post" class="$classStr">
-<p>
-END;*/
+	
+		$fs = SpecialPageFactory::getPage( 'FormEdit' );
+		$classStr = 'popupforminput';
+		$fs_url = $fs->getTitle()->getLocalURL();
+		$formInputAttrs = array( 'size' => $this->mWidth );
+		if ( $wgHtml5 ) {
+			$formInputAttrs['placeholder'] = $this->mPlaceholderText;
+		}
+		// Now apply the necessary settings and Javascript, depending
+		// on whether or not there's autocompletion (and whether the
+		// autocompletion is local or remote).
+		$input_num = 1;
+		$inNamespace = $this->mNamespaces;
+		if ( !isset( $inNamespace ) || $inNamespace == '' ) {
+			//if ( empty( $inAutocompletionSource ) ) {
+			$formInputAttrs['class'] = 'formInput';
+		} else {
+			SFParserFunctions::$num_autocompletion_inputs++;
+			$input_num = SFParserFunctions::$num_autocompletion_inputs;
+			// place the necessary Javascript on the page, and
+			// disable the cache (so the Javascript will show up) -
+			// if there's more than one autocompleted #forminput
+			// on the page, we only need to do this the first time
+			if ( $input_num == 1 ) {
+				$this->mParser->disableCache();
+				SFUtils::addJavascriptAndCSS( $this->mParser );
+			}
+			$inputID = 'input_' . $input_num;
+			$inputIDform = $inputID."form";
+			$formInputAttrs['id'] = $inputID;
+			//$formInputAttrs['namespace'] = $inNamespace;
+			$formInputAttrs['class'] = 'autocompleteInput createboxInput formInput';
+			$mRemoteAutocompletion = $this->mRemoteAutocompletion;
+			if ( $mRemoteAutocompletion ) {
+				$formInputAttrs['autocompletesettings'] = $inNamespace;
+				$formInputAttrs['autocompletedatatype'] = 'namespace';
+			} else {
+				$autocompletion_values = SFUtils::getAutocompleteValues( $inNamespace, 'namespace' );
+				global $sfgAutocompleteValues;
+				$sfgAutocompleteValues[$inputID] = $autocompletion_values;
+				$formInputAttrs['autocompletesettings'] = $inputID;
+			}
+		}
+		/*$htmlOut = <<<END
+		 <form id="$inputIDform" name="createbox" action="$fs_url" method="post" class="$classStr">
+		<p>
+		END;*/
 		//$htmlOut = "<p style='margin-left: auto; margin-right: auto; text-align: center; background-color:'" . $this->mBGColor."'>";
 		$inBGColor = $this->mBGColor;
 		$htmlOut = Xml::openElement( 'div',
-			array('style' => 'margin-left: auto; margin-right: auto; text-align: center; background-color:$inBGColor')
+				array('style' => 'margin-left: auto; margin-right: auto; text-align: center; background-color:$inBGColor')
 		);
 		/*
-		$htmlOut = Xml::openElement( 'div',
-			array('style' => 'text-align: center; background-color:' . $this->mBGColor)
-		);
+			$htmlOut = Xml::openElement( 'div',
+					array('style' => 'text-align: center; background-color:' . $this->mBGColor)
+			);
 		*/
-	  $htmlOut .= Html::input( 'page_name', $inValue, 'text', $formInputAttrs ) ;
-
+		
+		$htmlOut .= Html::input( 'page_name', $inValue, 'text', $formInputAttrs ) ;
+	
 		// if the form start URL looks like "index.php?title=Special:FormStart"
-        // (i.e., it's in the default URL style), add in the title as a
-        // hidden value
-        if ( ( $pos = strpos( $fs_url, "title=" ) ) > - 1 ) {
-                $htmlOut .= Html::hidden( "title", urldecode( substr( $fs_url, $pos + 6 ) ) );
-        }
-        $inFormName = $inValue = $inButtonStr = $inQueryStr = '';
-        $inButtonStr = $this->mButtonLabel;
-        $inFormName = $this->mForm;
-        //$inFormAttrs = array( 'id' => $inputID.'_namespace' );
-        //$inFormAttrs['type'] = 'hidden';
-        //$inFormAttrs['value'] = $inFormName;
-        $inputID_namespace = $inputID."_namespace";
-        $htmlOut .= Html::hidden( $inputID_namespace, $inFormName );
-        
-        if ( $inFormName == '' ) {
-                $htmlOut .= SFUtils::formDropdownHTML();
-        } else {
-                $htmlOut .= Html::hidden( "form", $inFormName );
-        }
-        // Recreate the passed-in query string as a set of hidden variables.
-        if ( !empty( $inQueryArr ) ) {
-                // query string has to be turned into hidden inputs.
-                $query_components = explode( '&', http_build_query( $inQueryArr, '', '&' ) );
-                foreach ( $query_components as $query_component ) {
-                        $var_and_val = explode( '=', $query_component, 2 );
-                        if ( count( $var_and_val ) == 2 ) {
-                                $htmlOut .= Html::hidden( urldecode( $var_and_val[0] ), urldecode( $var_and_val[1] ) );
-                        }
-                }
-        }
-	$mBR = $this->mBR;
-	$htmlOut .= $mBR;        
-        $button_str = ( $inButtonStr != '' ) ? $inButtonStr : wfMessage( 'sf_formstart_createoredit' )->escaped();
-        $inNewWin = 'false';
-        if ( isset( $this->mNewWin ) && ( $this->mNewWin == 'true')) {
-        	$inNewWin = 'true';
-        }
-        $htmlOut .= <<<END
-<input type="button" value="$button_str" onclick="var a='$fs_url';if(($.inArray($inputID.value,mw.config.get('sfgAutocompleteValues').$inputID)) < 0){a='$fs_url/$inFormName?&namespace=$inNamespace';}else{a='$fs_url/$inFormName/$inNamespace:'+$inputID.value.replace(/ /g,'_');};if($inNewWin){window.open(a);}else{window.location=a;}"/>
+		// (i.e., it's in the default URL style), add in the title as a
+		// hidden value
+		if ( ( $pos = strpos( $fs_url, "title=" ) ) > - 1 ) {
+			$htmlOut .= Html::hidden( "title", urldecode( substr( $fs_url, $pos + 6 ) ) );
+		}
+		$inFormName = $inValue = $inButtonStr = $inQueryStr = '';
+		$inButtonStr = $this->mButtonLabel;
+		$inFormName = $this->mForm;
+		//$inFormAttrs = array( 'id' => $inputID.'_namespace' );
+		//$inFormAttrs['type'] = 'hidden';
+		//$inFormAttrs['value'] = $inFormName;
+		$inputID_namespace = $inputID."_namespace";
+		$htmlOut .= Html::hidden( $inputID_namespace, $inFormName );
+	
+		if ( $inFormName == '' ) {
+			$htmlOut .= SFUtils::formDropdownHTML();
+		} else {
+			$htmlOut .= Html::hidden( "form", $inFormName );
+		}
+		// Recreate the passed-in query string as a set of hidden variables.
+		if ( !empty( $inQueryArr ) ) {
+			// query string has to be turned into hidden inputs.
+			$query_components = explode( '&', http_build_query( $inQueryArr, '', '&' ) );
+			foreach ( $query_components as $query_component ) {
+				$var_and_val = explode( '=', $query_component, 2 );
+				if ( count( $var_and_val ) == 2 ) {
+					$htmlOut .= Html::hidden( urldecode( $var_and_val[0] ), urldecode( $var_and_val[1] ) );
+				}
+			}
+		}
+		$mBR = $this->mBR;
+		$htmlOut .= $mBR;
+		$button_str = ( $inButtonStr != '' ) ? $inButtonStr : wfMessage( 'sf_formstart_createoredit' )->escaped();
+		$inNewWin = 'false';
+		if ( isset( $this->mNewWin ) && ( $this->mNewWin == 'true')) {
+			$inNewWin = 'true';
+		}
+		
+		$htmlOut .= <<<END
+<input type="button" value="$button_str" onclick="var a='$fs_url';if(($.inArray($inputID.value,mw.config.get('sfgAutocompleteValues').$inputID)) < 0){a='$fs_url/$inFormName?&namespace=$inNamespace';}else{a='$wgScript/$inNamespace:'+$inputID.value.replace(/ /g,'_');};if($inNewWin){window.open(a);}else{window.location=a;}"/>
 END;
-//</form
-			if ( ! empty( $inNamespace ) ) {
-                	//$htmlOut .= "\t\t\t" .
-                        Html::element( 'div',
-                                array(
-                                        'class' => 'page_name_auto_complete',
-                                        'id' => "div_$input_num",
-                                ),
-                                // it has to be <div></div>, not
-                                // <div />, to work properly - stick
-                                // in a space as the content
-                                ' '
-                        ) ;
-        }
-        $htmlOut .= Xml::closeElement( 'div' );
-        // hack to remove newline from beginning of output, thanks to
-        // http://jimbojw.com/wiki/index.php?title=Raw_HTML_Output_from_a_MediaWiki_Parser_Function
-        return $htmlOut;
-        //return $this->mParser->insertStripItem( $htmlOut, $this->mParser->mStripState );
+		//</form
+		if ( ! empty( $inNamespace ) ) {
+			//$htmlOut .= "\t\t\t" .
+			Html::element( 'div',
+			array(
+			'class' => 'page_name_auto_complete',
+			'id' => "div_$input_num",
+			),
+			// it has to be <div></div>, not
+			// <div />, to work properly - stick
+			// in a space as the content
+			' '
+					) ;
+		}
+		$htmlOut .= Xml::closeElement( 'div' );
+		// hack to remove newline from beginning of output, thanks to
+		// http://jimbojw.com/wiki/index.php?title=Raw_HTML_Output_from_a_MediaWiki_Parser_Function
+		return $htmlOut;
+		//return $this->mParser->insertStripItem( $htmlOut, $this->mParser->mStripState );
 		// Return HTML
 		//return $htmlOut;
 	}
+	
+
+	public function getCreateEditForm() {
+		global $wgScript;
+		global $wgHtml5;
+	
+		if ( !$this->mButtonLabel ) {
+			$this->mButtonLabel = wfMessage( 'createarticle' )->text();
+		}
+	
+		$fs = SpecialPageFactory::getPage( 'FormEdit' );
+		$classStr = 'popupforminput';
+		$fs_url = $fs->getTitle()->getLocalURL();
+		$formInputAttrs = array( 'size' => $this->mWidth );
+		if ( $wgHtml5 ) {
+			$formInputAttrs['placeholder'] = $this->mPlaceholderText;
+		}
+		// Now apply the necessary settings and Javascript, depending
+		// on whether or not there's autocompletion (and whether the
+		// autocompletion is local or remote).
+		$input_num = 1;
+		$inNamespace = $this->mNamespaces;
+		if ( !isset( $inNamespace ) || $inNamespace == '' ) {
+			//if ( empty( $inAutocompletionSource ) ) {
+			$formInputAttrs['class'] = 'formInput';
+		} else {
+			SFParserFunctions::$num_autocompletion_inputs++;
+			$input_num = SFParserFunctions::$num_autocompletion_inputs;
+			// place the necessary Javascript on the page, and
+			// disable the cache (so the Javascript will show up) -
+			// if there's more than one autocompleted #forminput
+			// on the page, we only need to do this the first time
+			if ( $input_num == 1 ) {
+				$this->mParser->disableCache();
+				SFUtils::addJavascriptAndCSS( $this->mParser );
+			}
+			$inputID = 'input_' . $input_num;
+			$inputIDform = $inputID."form";
+			$formInputAttrs['id'] = $inputID;
+			//$formInputAttrs['namespace'] = $inNamespace;
+			$formInputAttrs['class'] = 'autocompleteInput createboxInput formInput';
+			$mRemoteAutocompletion = $this->mRemoteAutocompletion;
+			if ( $mRemoteAutocompletion ) {
+				$formInputAttrs['autocompletesettings'] = $inNamespace;
+				$formInputAttrs['autocompletedatatype'] = 'namespace';
+			} else {
+				$autocompletion_values = SFUtils::getAutocompleteValues( $inNamespace, 'namespace' );
+				global $sfgAutocompleteValues;
+				$sfgAutocompleteValues[$inputID] = $autocompletion_values;
+				$formInputAttrs['autocompletesettings'] = $inputID;
+			}
+		}
+		/*$htmlOut = <<<END
+		 <form id="$inputIDform" name="createbox" action="$fs_url" method="post" class="$classStr">
+		<p>
+		END;*/
+		//$htmlOut = "<p style='margin-left: auto; margin-right: auto; text-align: center; background-color:'" . $this->mBGColor."'>";
+		$inBGColor = $this->mBGColor;
+		$htmlOut = Xml::openElement( 'div',
+				array('style' => 'margin-left: auto; margin-right: auto; text-align: center; background-color:$inBGColor')
+		);
+		/*
+			$htmlOut = Xml::openElement( 'div',
+					array('style' => 'text-align: center; background-color:' . $this->mBGColor)
+			);
+		*/
+		$htmlOut .= Html::input( 'page_name', $inValue, 'text', $formInputAttrs ) ;
+	
+		// if the form start URL looks like "index.php?title=Special:FormStart"
+		// (i.e., it's in the default URL style), add in the title as a
+		// hidden value
+		if ( ( $pos = strpos( $fs_url, "title=" ) ) > - 1 ) {
+			$htmlOut .= Html::hidden( "title", urldecode( substr( $fs_url, $pos + 6 ) ) );
+		}
+		$inFormName = $inValue = $inButtonStr = $inQueryStr = '';
+		$inButtonStr = $this->mButtonLabel;
+		$inFormName = $this->mForm;
+		//$inFormAttrs = array( 'id' => $inputID.'_namespace' );
+		//$inFormAttrs['type'] = 'hidden';
+		//$inFormAttrs['value'] = $inFormName;
+		$inputID_namespace = $inputID."_namespace";
+		$htmlOut .= Html::hidden( $inputID_namespace, $inFormName );
+	
+		if ( $inFormName == '' ) {
+			$htmlOut .= SFUtils::formDropdownHTML();
+		} else {
+			$htmlOut .= Html::hidden( "form", $inFormName );
+		}
+		// Recreate the passed-in query string as a set of hidden variables.
+		if ( !empty( $inQueryArr ) ) {
+			// query string has to be turned into hidden inputs.
+			$query_components = explode( '&', http_build_query( $inQueryArr, '', '&' ) );
+			foreach ( $query_components as $query_component ) {
+				$var_and_val = explode( '=', $query_component, 2 );
+				if ( count( $var_and_val ) == 2 ) {
+					$htmlOut .= Html::hidden( urldecode( $var_and_val[0] ), urldecode( $var_and_val[1] ) );
+				}
+			}
+		}
+		$mBR = $this->mBR;
+		$htmlOut .= $mBR;
+		$button_str = ( $inButtonStr != '' ) ? $inButtonStr : wfMessage( 'sf_formstart_createoredit' )->escaped();
+		$inNewWin = 'false';
+		if ( isset( $this->mNewWin ) && ( $this->mNewWin == 'true')) {
+			$inNewWin = 'true';
+		}
+		$htmlOut .= <<<END
+<input type="button" value="$button_str" onclick="var a='$fs_url';if(($.inArray($inputID.value,mw.config.get('sfgAutocompleteValues').$inputID)) < 0){a='$fs_url/$inFormName?&namespace=$inNamespace';}else{a='$fs_url/$inFormName/$inNamespace:'+$inputID.value.replace(/ /g,'_');};if($inNewWin){window.open(a);}else{window.location=a;}"/>
+END;
+		//</form
+		if ( ! empty( $inNamespace ) ) {
+			//$htmlOut .= "\t\t\t" .
+			Html::element( 'div',
+			array(
+			'class' => 'page_name_auto_complete',
+			'id' => "div_$input_num",
+			),
+			// it has to be <div></div>, not
+			// <div />, to work properly - stick
+			// in a space as the content
+			' '
+					) ;
+		}
+		$htmlOut .= Xml::closeElement( 'div' );
+		// hack to remove newline from beginning of output, thanks to
+		// http://jimbojw.com/wiki/index.php?title=Raw_HTML_Output_from_a_MediaWiki_Parser_Function
+		return $htmlOut;
+		//return $this->mParser->insertStripItem( $htmlOut, $this->mParser->mStripState );
+		// Return HTML
+		//return $htmlOut;
+	}
+	
 	
 	/**
 	 * Extract options from a blob of text
