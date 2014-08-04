@@ -66,7 +66,7 @@ class FormInputMik {
 	public function getCreateForm() {
 		global $wgScript;
 		global $wgHtml5;
-	global $wgScript;
+		global $wgScript;
 		if ( !$this->mButtonLabel ) {
 			$this->mButtonLabel = wfMessage( 'createarticle' )->text();
 		}
@@ -127,6 +127,12 @@ class FormInputMik {
 					array('style' => 'text-align: center; background-color:' . $this->mBGColor)
 			);
 		*/
+		if ( isset( $this->inValue ) ) {
+			$inValue = $this->inValue;
+		}
+		if ( is_null($inValue) ) {
+			$inValue = '';
+		}
 		
 		$htmlOut .= Html::input( 'page_name', $inValue, 'text', $formInputAttrs ) ;
 	
